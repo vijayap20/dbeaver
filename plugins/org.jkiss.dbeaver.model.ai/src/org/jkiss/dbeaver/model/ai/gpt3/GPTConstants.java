@@ -27,5 +27,14 @@ public class GPTConstants {
     public static final String GPT_MODEL = "gpt.model";
     public static final String GPT_MODEL_TEMPERATURE = "gpt.model.temperature";
     public static final String GPT_LOG_QUERY = "gpt.log.query";
+        
+    //Claude Connection Strings
+    public static final String CLAUDEAI_ENGINE = "anthropic";
+    public static final String CLAUDE_API_TOKEN = "gpt.token";
+    public static final String CLAUDE_MODEL = "claude-2";
+    public static final String CLAUDE_MODEL_TEMPERATURE = "gpt.model.temperature";
+    public static final String CLAUDE_LOG_QUERY = "gpt.log.query";
+    public static final String CLAUDE_MODEL_TOP_P = "gpt.model.topP";
+    public static final String CLAUDE_MODEL_TOP_K = "gpt.model.topK";
 }
 

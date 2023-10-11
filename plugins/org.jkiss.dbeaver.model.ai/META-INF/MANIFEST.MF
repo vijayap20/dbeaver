@@ -5,6 +5,7 @@ Bundle-Name: DBeaver AI Model
 Bundle-SymbolicName: org.jkiss.dbeaver.model.ai;singleton:=true
 Bundle-Version: 1.0.12.qualifier
 Export-Package: org.jkiss.dbeaver.model.ai,
+ org.jkiss.dbeaver.model.ai.claude2,
  org.jkiss.dbeaver.model.ai.completion,
  org.jkiss.dbeaver.model.ai.gpt3,
  org.jkiss.dbeaver.model.ai.internal,

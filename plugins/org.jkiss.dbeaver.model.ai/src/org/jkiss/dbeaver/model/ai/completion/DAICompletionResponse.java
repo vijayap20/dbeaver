@@ -49,4 +49,9 @@ public class DAICompletionResponse {
     public void setResultMessage(String resultMessage) {
         this.resultMessage = resultMessage;
     }
+    
+    public String toString() {
+    	return "PROMPT : "+resultPrompt+"\nCompletion : "+resultCompletion
+    			+"\nMessage : "+resultMessage;
+    }
 }

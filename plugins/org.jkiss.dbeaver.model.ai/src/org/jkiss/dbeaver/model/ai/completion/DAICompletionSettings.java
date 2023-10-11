@@ -37,6 +37,7 @@ public class DAICompletionSettings {
     private static final Log log = Log.getLog(DAICompletionSettings.class);
 
     private final DBPDataSourceContainer dataSource;
+    private String aiProvider = "openai";
     private boolean metaTransferConfirmed;
     private boolean allowMetaTransfer;
     private DAICompletionScope scope;
@@ -45,6 +46,12 @@ public class DAICompletionSettings {
     public DAICompletionSettings(DBPDataSourceContainer dataSource) {
         this.dataSource = dataSource;
         loadSettings();
+    }
+    
+    public DAICompletionSettings(DBPDataSourceContainer dataSource, String aiProvider) {
+    	this.setAiProvider(aiProvider);
+    	this.dataSource = dataSource;
+    	loadSettings();
     }
 
     public boolean isMetaTransferConfirmed() {
@@ -86,26 +93,26 @@ public class DAICompletionSettings {
 
     private void loadSettings() {
         DBPPreferenceStore preferenceStore = getPreferenceStore();
-        String prefix = "ai-" + dataSource.getId() + ".";
-        metaTransferConfirmed = preferenceStore.getBoolean(prefix + AICompletionConstants.AI_META_TRANSFER_CONFIRMED);
+        String prefix = "ai-claude-" + dataSource.getId() + ".";
+        metaTransferConfirmed = preferenceStore.getBoolean(prefix + AICompletionConstants.AI_CLAUDE_META_TRANSFER_CONFIRMED);
         scope = CommonUtils.valueOf(
             DAICompletionScope.class,
-            preferenceStore.getString(prefix + AICompletionConstants.AI_META_SCOPE),
+            preferenceStore.getString(prefix + AICompletionConstants.AI_CLAUDE_META_SCOPE),
             DAICompletionScope.CURRENT_SCHEMA);
-        String csString = preferenceStore.getString(prefix + AICompletionConstants.AI_META_CUSTOM);
+        String csString = preferenceStore.getString(prefix + AICompletionConstants.AI_CLAUDE_META_CUSTOM);
         customObjectIds = csString == null ? new String[0] : csString.split(",");
     }
 
     public void saveSettings() {
         DBPPreferenceStore preferenceStore = getPreferenceStore();
-        String prefix = "ai-" + dataSource.getId() + ".";
-        preferenceStore.setValue(prefix + AICompletionConstants.AI_META_TRANSFER_CONFIRMED, metaTransferConfirmed);
-        preferenceStore.setValue(prefix + AICompletionConstants.AI_META_SCOPE, scope.name());
+        String prefix = "ai-claude-" + dataSource.getId() + ".";
+        preferenceStore.setValue(prefix + AICompletionConstants.AI_CLAUDE_META_TRANSFER_CONFIRMED, metaTransferConfirmed);
+        preferenceStore.setValue(prefix + AICompletionConstants.AI_CLAUDE_META_SCOPE, scope.name());
         if (ArrayUtils.isEmpty(customObjectIds)) {
-            preferenceStore.setToDefault(prefix + AICompletionConstants.AI_META_CUSTOM);
+            preferenceStore.setToDefault(prefix + AICompletionConstants.AI_CLAUDE_META_CUSTOM);
         } else {
             preferenceStore.setValue(
-                prefix + AICompletionConstants.AI_META_CUSTOM,
+                prefix + AICompletionConstants.AI_CLAUDE_META_CUSTOM,
                 String.join(",", customObjectIds));
         }
         try {
@@ -114,5 +121,13 @@ public class DAICompletionSettings {
             log.error(e);
         }
     }
+
+	public String getAiProvider() {
+		return aiProvider;
+	}
+
+	public void setAiProvider(String aiProvider) {
+		this.aiProvider = aiProvider;
+	}
 
 }

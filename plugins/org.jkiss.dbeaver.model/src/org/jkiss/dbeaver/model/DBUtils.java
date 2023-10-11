@@ -1694,7 +1694,8 @@ public final class DBUtils {
         @NotNull DBPDataSource dataSource,
         @NotNull DBPNamedObject object, 
         @NotNull DBPEvaluationContext context) {
-        return getObjectFullName(dataSource, object, context, DBPAttributeReferencePurpose.UNSPECIFIED);
+    	log.debug("<DEBUG>Inside GetObjectFullName Method...");
+    	return getObjectFullName(dataSource, object, context, DBPAttributeReferencePurpose.UNSPECIFIED);
     }
 
     /**

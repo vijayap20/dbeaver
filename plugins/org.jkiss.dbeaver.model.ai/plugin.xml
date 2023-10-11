@@ -7,5 +7,13 @@
     <extension point="com.dbeaver.ai.engine">
         <completionEngine id="openai" label="OpenAI" class="org.jkiss.dbeaver.model.ai.gpt3.GPTCompletionEngine"/>
     </extension>
+    
+    <extension-point id="com.dbeaver.ai.claude.engine" name="AI integrations" schema="schema/com.dbeaver.ai.claudeengine.exsd"/>
+
+    <extension point="com.dbeaver.ai.claude.engine">
+        <completionEngine id="anthropic" label="Anthropic" class="org.jkiss.dbeaver.model.ai.claude2.ClaudeCompletionEngine"/>
+    </extension>
+    
+    
 
 </plugin>

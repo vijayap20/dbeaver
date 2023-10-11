@@ -37,5 +37,8 @@ public class AIPreferencesInitializer extends AbstractPreferenceInitializer {
         PrefUtils.setDefaultPreferenceValue(store, GPTConstants.GPT_MODEL, GPTModel.GPT_TURBO16.getName());
         PrefUtils.setDefaultPreferenceValue(store, GPTConstants.GPT_MODEL_TEMPERATURE, 0.0f);
         PrefUtils.setDefaultPreferenceValue(store, GPTConstants.GPT_LOG_QUERY, false);
+        
+        
+        //Claude Constatnts Values
     }
 }

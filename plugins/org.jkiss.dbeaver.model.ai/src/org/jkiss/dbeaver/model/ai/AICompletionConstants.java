@@ -33,6 +33,19 @@ public class AICompletionConstants {
     public static final String AI_META_TRANSFER_CONFIRMED = "ai.meta.transferConfirmed";
     public static final String AI_META_SCOPE = "ai.meta.scope";
     public static final String AI_META_CUSTOM = "ai.meta.customObjects";
+    
+    
+    
+    public static final String AI_CLAUDE_DISABLED = "ai.claude.completion.disabled";
+    public static final String AI_CLAUDE_COMPLETION_EXECUTE_IMMEDIATELY = "ai.claude.completion.executeImmediately";
+    public static final String AI_CLAUDE_INCLUDE_SOURCE_TEXT_IN_QUERY_COMMENT = "ai.claude.completion.includeSourceTextInQuery";
+    public static final String AI_CLAUDE_COMPLETION_MAX_CHOICES = "ai.claude.completion.maxChoices";
+
+    // Datasource-specific props
+
+    public static final String AI_CLAUDE_META_TRANSFER_CONFIRMED = "ai.claude.meta.transferConfirmed";
+    public static final String AI_CLAUDE_META_SCOPE = "ai.claude.meta.scope";
+    public static final String AI_CLAUDE_META_CUSTOM = "ai.claude.meta.customObjects";
 
 }
 

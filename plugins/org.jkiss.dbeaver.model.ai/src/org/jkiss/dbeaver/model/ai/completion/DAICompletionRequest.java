@@ -22,6 +22,7 @@ import org.jkiss.dbeaver.model.struct.DBSEntity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Completion request
@@ -38,6 +39,25 @@ public class DAICompletionRequest {
     private List<DBSEntity> customEntities;
 
     private final Map<String, Object> completionOptions = new HashMap<>();
+    
+    public String toString() {
+    	return "Begin Text : "+getBeginText()+"\n"
+    			+"Prompt Text : "+getPromptText()
+    			+"\nEnd Text : "+getEndText()
+    			+"\nBegin Truncated : "+isBeginTruncated()
+    			+"\nEnd Truncated : "+isEndTruncated()
+    			+"\nScope : "+getScope().toString()
+    			+"\nCustom Entities : "+listToString(getCustomEntities());
+    }
+    
+    public String listToString(List<DBSEntity> list) {
+    	System.out.println("List Size :"+list.size());
+    	StringBuilder sb = new StringBuilder();
+    	for(DBSEntity ent : list) {
+    		sb.append(ent.getName()).append("\n");
+    	}
+    	return sb.toString();
+    }
 
     public String getBeginText() {
         return beginText;

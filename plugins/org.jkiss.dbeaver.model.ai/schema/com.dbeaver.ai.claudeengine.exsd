@@ -3,7 +3,7 @@
 <schema targetNamespace="org.jkiss.dbeaver.model.ai" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="com.dbeaver.ai.engine" id="com.dbeaver.ai.engine" name="AI engines"/>
+         <meta.schema plugin="com.dbeaver.ai.claude.engine" id="com.dbeaver.ai.claude.engine" name="AI engines"/>
       </appInfo>
       <documentation>
          AI engines
@@ -31,11 +31,12 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.jkiss.dbeaver.model.ai.completion.DAICompletionEngine"/>
+                  <meta.attribute kind="java" basedOn=":org.jkiss.dbeaver.model.ai.completion.ClaudeCompletionEngine"/>
                </appInfo>
             </annotation>
          </attribute>
       </complexType>
    </element>
+
 
 </schema>

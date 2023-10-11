@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jkiss.dbeaver.model.ai.gpt3;
+package org.jkiss.dbeaver.model.ai.claude2;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -71,8 +71,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GPTCompletionEngine implements DAICompletionEngine {
-    private static final Log log = Log.getLog(GPTCompletionEngine.class);
+public class ClaudeCompletionEngine implements DAICompletionEngine {
+    private static final Log log = Log.getLog(ClaudeCompletionEngine.class);
 
     //How many retries may be done if code 429 happens
     private static final int MAX_REQUEST_ATTEMPTS = 3;
@@ -86,18 +86,18 @@ public class GPTCompletionEngine implements DAICompletionEngine {
         + "Please reduce .+");
 
 
-    public GPTCompletionEngine() {
+    public ClaudeCompletionEngine() {
     }
 
     @Override
     public String getEngineName() {
-        return "GPT-3";
+        return "claude-2";
     }
 
     @Override
     public String getModelName() {
-    	log.debug("Model Name : "+DBWorkbench.getPlatform().getPreferenceStore().getString(GPTConstants.GPT_MODEL));
-        return DBWorkbench.getPlatform().getPreferenceStore().getString(GPTConstants.GPT_MODEL);
+    	log.debug("Model Name : "+DBWorkbench.getPlatform().getPreferenceStore().getString(ClaudeConstants.GPT_MODEL));
+        return DBWorkbench.getPlatform().getPreferenceStore().getString(ClaudeConstants.GPT_MODEL);
     }
 
     @NotNull
@@ -138,13 +138,13 @@ public class GPTCompletionEngine implements DAICompletionEngine {
     }
 
     private static String acquireToken() {
-        AIEngineSettings openAiConfig = AISettings.getSettings().getEngineConfiguration(GPTConstants.OPENAI_ENGINE);
-        Object token = openAiConfig.getProperties().get(GPTConstants.GPT_API_TOKEN);
+        AIEngineSettings openAiConfig = AISettings.getSettings().getEngineConfiguration(ClaudeConstants.OPENAI_ENGINE);
+        Object token = openAiConfig.getProperties().get(ClaudeConstants.GPT_API_TOKEN);
         if (token != null) {
             return token.toString();
         }
-        log.debug("Acquired Roken : "+DBWorkbench.getPlatform().getPreferenceStore().getString(GPTConstants.GPT_API_TOKEN));
-        return DBWorkbench.getPlatform().getPreferenceStore().getString(GPTConstants.GPT_API_TOKEN);
+        log.debug("Acquired Roken : "+DBWorkbench.getPlatform().getPreferenceStore().getString(ClaudeConstants.GPT_API_TOKEN));
+        return DBWorkbench.getPlatform().getPreferenceStore().getString(ClaudeConstants.GPT_API_TOKEN);
     }
 
     /**
@@ -190,7 +190,7 @@ public class GPTCompletionEngine implements DAICompletionEngine {
             clientInstances.put(container.getId(), service);
         }
         String modifiedRequest = addDBMetadataToClaudeRequest(monitor, request, executionContext, mainObject,
-            GPTModel.getByName(getModelName()));
+            ClaudeModel.getByName(getModelName()));
         if (monitor.isCanceled()) {
             return "";
         }
@@ -198,7 +198,7 @@ public class GPTCompletionEngine implements DAICompletionEngine {
         Object completionRequest = createCompletionRequest(modifiedRequest);
         monitor.subTask("Request GPT completion");
         try {
-            if (DBWorkbench.getPlatform().getPreferenceStore().getBoolean(GPTConstants.GPT_LOG_QUERY)) {
+            if (DBWorkbench.getPlatform().getPreferenceStore().getBoolean(ClaudeConstants.GPT_LOG_QUERY)) {
                 if (completionRequest instanceof ChatCompletionRequest) {
                     log.debug("Chat GPT request:\n" + ((ChatCompletionRequest) completionRequest).getMessages().get(0).getContent());
                 } else {
@@ -275,6 +275,7 @@ public class GPTCompletionEngine implements DAICompletionEngine {
             	log.debug("Modified Prompt : "+modifiedRequest);
                 ClaudeConnect claude = new ClaudeConnect(modifiedRequest);
                 completionText = claude.parseResponseBody();
+                System.out.println("completionText Value : "+completionText);
                 String[] _responseArr = completionText.split("\\r\\n\\r\\n");
                 String respContent = _responseArr[_responseArr.length-2];
                 respContent = processCompletionText(respContent);
@@ -436,12 +437,12 @@ public class GPTCompletionEngine implements DAICompletionEngine {
     }
 
     private static Object createCompletionRequest(@NotNull String request, int responseSize) {
-        Double temperature = getPreferenceStore().getDouble(GPTConstants.GPT_MODEL_TEMPERATURE);
-        String modelId = getPreferenceStore().getString(GPTConstants.GPT_MODEL);
+        Double temperature = getPreferenceStore().getDouble(ClaudeConstants.GPT_MODEL_TEMPERATURE);
+        String modelId = getPreferenceStore().getString(ClaudeConstants.GPT_MODEL);
         log.debug("Model ID : " + modelId);
-        GPTModel model = CommonUtils.isEmpty(modelId) ? null : GPTModel.getByName(modelId);
+        ClaudeModel model = CommonUtils.isEmpty(modelId) ? null : ClaudeModel.getByName(modelId);
         if (model == null) {
-            model = GPTModel.GPT_TURBO16;
+            model = ClaudeModel.CLAUDE;
         }
         if (model.isChatAPI()) {
         	log.debug("<GPTCompletionEngine> It is Chat API....");
@@ -508,7 +509,7 @@ public class GPTCompletionEngine implements DAICompletionEngine {
         DAICompletionRequest request,
         DBCExecutionContext executionContext,
         DBSObjectContainer mainObject,
-        GPTModel model
+        ClaudeModel model
     ) throws DBException {
         if (mainObject == null || mainObject.getDataSource() == null || CommonUtils.isEmptyTrimmed(request.getPromptText())) {
             throw new DBException("Invalid completion request");
@@ -564,7 +565,7 @@ public class GPTCompletionEngine implements DAICompletionEngine {
         DAICompletionRequest request,
         DBCExecutionContext executionContext,
         DBSObjectContainer mainObject,
-        GPTModel model
+        ClaudeModel model
     ) throws DBException {
         if (mainObject == null || mainObject.getDataSource() == null || CommonUtils.isEmptyTrimmed(request.getPromptText())) {
             throw new DBException("Invalid completion request");

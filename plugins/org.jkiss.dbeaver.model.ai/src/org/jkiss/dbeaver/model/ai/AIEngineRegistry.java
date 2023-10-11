@@ -1,5 +1,6 @@
 /*
- * DBeaver - Universal Database Manager
+ * DBeaver - Universal Database 
+
  * Copyright (C) 2010-2023 DBeaver Corp and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +22,7 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.jkiss.dbeaver.DBException;
 import org.jkiss.dbeaver.Log;
+import org.jkiss.dbeaver.model.ai.claude2.ClaudeCompletionEngine;
 import org.jkiss.dbeaver.model.ai.completion.DAICompletionEngine;
 import org.jkiss.dbeaver.model.impl.AbstractDescriptor;
 import org.jkiss.dbeaver.registry.RegistryConstants;
@@ -62,6 +64,11 @@ public class AIEngineRegistry {
             ObjectType objectType = new ObjectType(contributorConfig, RegistryConstants.ATTR_CLASS);
             return objectType.createInstance(DAICompletionEngine.class);
         }
+        
+        public ClaudeCompletionEngine createClaudeInstance() throws DBException {
+        	ObjectType objectType = new ObjectType(contributorConfig, RegistryConstants.ATTR_CLASS);
+        	return objectType.createInstance(ClaudeCompletionEngine.class);
+        }
 
     }
 
@@ -73,6 +80,13 @@ public class AIEngineRegistry {
         }
         return instance;
     }
+    
+    public synchronized static AIEngineRegistry getClaudeInstance() {
+    	if(instance == null) {
+    		instance = new AIEngineRegistry(Platform.getExtensionRegistry());
+    	}
+    	return instance;
+    }
 
     private final Map<String, EngineDescriptor> descriptorMap = new LinkedHashMap<>();
     private final Map<String, String> replaceMap = new LinkedHashMap<>();
@@ -82,6 +96,26 @@ public class AIEngineRegistry {
         for (IConfigurationElement ext : extElements) {
             if ("completionEngine".equals(ext.getName())) {
                 EngineDescriptor descriptor = new EngineDescriptor(ext);
+                System.out.println("Descriptor ID : "+descriptor.getId());
+                System.out.println("Descriptor VALUE : "+descriptor);
+                descriptorMap.put(descriptor.getId(), descriptor);
+
+                String replaces = descriptor.getReplaces();
+                if (!CommonUtils.isEmpty(replaces)) {
+                    for (String rl : replaces.split(",")) {
+                        replaceMap.put(rl, descriptor.getId());
+                    }
+                }
+            }
+        }
+        
+        //Add the entries for the Anthropic
+        IConfigurationElement[] extElements2 = registry.getConfigurationElementsFor("com.dbeaver.ai.claude.engine");
+        for (IConfigurationElement ext : extElements2) {
+            if ("completionEngine".equals(ext.getName())) {
+                EngineDescriptor descriptor = new EngineDescriptor(ext);
+                System.out.println("Descriptor ID : "+descriptor.getId());
+                System.out.println("Descriptor VALUE : "+descriptor);
                 descriptorMap.put(descriptor.getId(), descriptor);
 
                 String replaces = descriptor.getReplaces();
@@ -118,6 +152,21 @@ public class AIEngineRegistry {
             throw new DBException("AI engine '" + id + "' not found");
         }
         return descriptor.createInstance();
+    }
+    
+    public ClaudeCompletionEngine getClaudeCompletionEngine(String id) throws DBException {
+        while (true) {
+            String replace = replaceMap.get(id);
+            if (replace == null) {
+                break;
+            }
+            id = replace;
+        }
+        EngineDescriptor descriptor = descriptorMap.get(id);
+        if (descriptor == null) {
+            throw new DBException("AI engine '" + id + "' not found");
+        }
+        return descriptor.createClaudeInstance();
     }
 
 }

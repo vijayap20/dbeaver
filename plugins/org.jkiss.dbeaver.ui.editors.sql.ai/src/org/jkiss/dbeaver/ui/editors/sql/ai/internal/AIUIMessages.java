@@ -31,6 +31,15 @@ public class AIUIMessages extends NLS {
     public static String gpt_preference_page_text_temperature;
     public static String gpt_preference_page_text_max_tokens;
     public static String gpt_preference_page_text_max_tables;
+    
+    public static String claude_preference_page_group_model;
+    public static String claude_preference_page_group_model_advanced;
+    public static String claude_preference_page_combo_engine; 
+    public static String claude_preference_page_text_temperature;
+    public static String claude_preference_page_text_max_tokens;
+    public static String claude_preference_page_text_top_p;
+    public static String claude_preference_page_text_top_k;
+    public static String claude_preference_page_text_stream;
 
     public static String gpt_dialog_title;
 
