@@ -23,7 +23,7 @@ public class ClaudeConnect {
 
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, "{" +
-        	    "  \"query\": \"You are a legal AI assistant.\",\n" +
+        	    "  \"query\": \""+request+"\",\n" +
         	    "  \"config\": {\n" +
         	    "    \"max_tokens_to_sample\": 2000,\n" +
         	    "    \"temperature\": 0\n" +
