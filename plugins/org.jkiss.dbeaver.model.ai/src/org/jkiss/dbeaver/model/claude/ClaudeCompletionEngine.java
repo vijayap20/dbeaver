@@ -275,14 +275,17 @@ public class ClaudeCompletionEngine implements DAICompletionEngine {
             	log.debug("Modified Prompt : "+modifiedRequest);
                 ClaudeConnect claude = new ClaudeConnect(modifiedRequest);
                 completionText = claude.parseResponseBody();
-                String[] _responseArr = completionText.split("\\r\\n\\r\\n");
-                String respContent = _responseArr[_responseArr.length-2];
-                respContent = processCompletionText(respContent);
-                completionText = respContent ; 
-                HashSet<String> responseContent = new HashSet<String>();
-                String tempString = null ; 
-                tempString = sqlQueryExtractor(respContent);
-                System.out.println("TempSTring " +tempString);
+		log.debug("Claude Response Text : "+completionText);
+		String tempString = extractSQLQueryFromCompletionResponse(completionText);
+		log.debug("Claude Response Text(Final) : "+tempString);
+                //String[] _responseArr = completionText.split("\\r\\n\\r\\n");
+                //String respContent = _responseArr[_responseArr.length-2];
+                //respContent = processCompletionText(respContent);
+                //completionText = respContent ; 
+                //HashSet<String> responseContent = new HashSet<String>();
+                //String tempString = null ; 
+                //tempString = sqlQueryExtractor(respContent);
+                //System.out.println("TempSTring " +tempString);
 //                for(String respContent : _responseArr) {
 //                	tempString = sqlQueryExtractor(respContent);
 //                	System.out.println("String Value : "+tempString);
@@ -340,6 +343,16 @@ public class ClaudeCompletionEngine implements DAICompletionEngine {
     
     private void jsonDataExtractor(String data) {
     	
+    }
+
+    private String extractSQLQueryFromCompletionResponse(String response) {
+    	int startIndex = response.indexOf("<sql>");
+    	int endIndex = response.indexOf("</sql>");    	  
+    	if(startIndex == -1 || endIndex == -1) {
+    	   return ""; 
+    	}    	  
+    	String sql = response.substring(startIndex + 6, endIndex);
+    	return sql.trim();
     }
     
     private String processCompletionText(String text){
