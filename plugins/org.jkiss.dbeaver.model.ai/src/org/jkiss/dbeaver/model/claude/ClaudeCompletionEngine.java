@@ -278,6 +278,8 @@ public class ClaudeCompletionEngine implements DAICompletionEngine {
 		log.debug("Claude Response Text : "+completionText);
 		String tempString = extractSQLQueryFromCompletionResponse(completionText);
 		log.debug("Claude Response Text(Final) : "+tempString);
+		tempString = removeEscapeSequence(tempString);
+		log.debug("Claude Response Text(Final after removing Escape Sequence) : "+tempString);
                 //String[] _responseArr = completionText.split("\\r\\n\\r\\n");
                 //String respContent = _responseArr[_responseArr.length-2];
                 //respContent = processCompletionText(respContent);
@@ -354,6 +356,18 @@ public class ClaudeCompletionEngine implements DAICompletionEngine {
     	String sql = response.substring(startIndex + 6, endIndex);
     	return sql.trim();
     }
+
+    private String removeEscapeSequence(String input){
+	return input.replace("\\n", "")
+            .replace("\\r", "") 
+            .replace("\\t", "")
+            .replace("\\b", "")
+            .replace("\\f", "")
+            .replace("\\\"", "")
+            .replace("\\'", "")
+            .replace("\\\\", "");
+    }
+	
     
     private String processCompletionText(String text){
       ArrayList<String> completions = new ArrayList<>();
